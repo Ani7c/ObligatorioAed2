@@ -16,6 +16,10 @@ public class Jugador implements Comparable<Jugador> {
         this.categoria = categoria;
     }
 
+    public Jugador(String alias) {
+        this.alias = alias;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

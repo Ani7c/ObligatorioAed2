@@ -1,6 +1,6 @@
 package Estructuras;
 
-public class Lista<T> {
+public class Lista<T extends Comparable<T>> {
 
     protected NodoLista<T> inicio;
     protected int largo;

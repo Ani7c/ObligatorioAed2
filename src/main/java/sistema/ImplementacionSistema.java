@@ -1,19 +1,52 @@
 package sistema;
 
+import Estructuras.ABB;
+import dominio.Equipo;
+import dominio.Jugador;
+import dominio.Categoria;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
 
 
+    private ABB<Equipo> ABBEquipo;
+    private ABB<Jugador> ABBJugador;
+
+
+
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
-        return Retorno.noImplementada();
+        if(maxSucursales <= 3) { return Retorno.error1("La cantidad de sucursales debe ser mayor a 3");}
+        ABBEquipo = new ABB<Equipo>();
+        ABBJugador = new ABB<Jugador>();
+        //inicializar las sucursales
+
+        return Retorno.ok();
     }
 
     @Override
     public Retorno registrarJugador(String alias, String nombre, String apellido, Categoria categoria) {
-        return Retorno.noImplementada();
-    }
+
+    //    1. Si alguno de los parámetros es vacío o null.
+      //  2. Si ya existe un jugador registrado con ese alias.
+        Jugador nuevoJugador = new Jugador(alias);
+        if(alias == "" || nombre == "" || apellido == "" || categoria == null) {
+            return Retorno.error1("Los parametros no pueden ser vacios");
+        }
+        Jugador jugadorBuscado = ABBJugador.buscar(nuevoJugador);
+        if(jugadorBuscado != null) {
+            return Retorno.error2("Ya existe un jugador registrado con ese alias");
+        }
+            nuevoJugador.setAlias(alias);
+            nuevoJugador.setCategoria(categoria);
+            nuevoJugador.setApellido(apellido);
+            nuevoJugador.setNombre(nombre);
+            ABBJugador.insertar(nuevoJugador);
+        return Retorno.ok();
+
+        }
+
+
 
     @Override
     public Retorno buscarJugador(String alias) {
@@ -26,7 +59,7 @@ public class ImplementacionSistema implements Sistema {
     }
 
     @Override
-    public Retorno listarJugadoresPorCategoria(Categoria unaCategoria) {
+    public Retorno listarJugadoresPorCategoria(Categoriadd unaCategoria) {
         return Retorno.noImplementada();
     }
 

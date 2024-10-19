@@ -3,7 +3,7 @@ package interfaz;
 import java.util.Arrays;
 import java.util.Objects;
 
-public enum Categoria {
+public enum Categoriadd {
     PRINCIPIANTE(0, "Principiante"),
     ESTANDARD(1, "Estándar"),
     PROFESIONAL(2, "Profesional");
@@ -11,7 +11,7 @@ public enum Categoria {
     private final int indice;
     private final String texto;
 
-    Categoria(int indice, String texto) {
+    Categoriadd(int indice, String texto) {
         this.indice = indice;
         this.texto = texto;
     }
@@ -24,8 +24,8 @@ public enum Categoria {
         return texto;
     }
 
-    public static Categoria fromTexto(String texto) {
-        return Arrays.stream(Categoria.values())
+    public static Categoriadd fromTexto(String texto) {
+        return Arrays.stream(Categoriadd.values())
                 .filter(a -> Objects.equals(a.texto, texto))
                 .findFirst()
                 .orElse(null);
