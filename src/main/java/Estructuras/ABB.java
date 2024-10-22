@@ -82,7 +82,17 @@ public class ABB<T extends Comparable<T>>{
                         nodo.dato +
                         (listarAscendenteString(nodo.der).isEmpty() ? "" : "|" + listarAscendenteString(nodo.der));
     }
-
+    public String listarDescendenteString() {
+        return listarDescendenteString(raiz);
+    }
+    //doy vuelta los subarboles
+    private String listarDescendenteString(NodoABB<T> nodo) {
+        return nodo == null ? "" :
+                listarDescendenteString(nodo.der) +
+                        (listarDescendenteString(nodo.der).isEmpty() ? "" : "|") +
+                        nodo.dato +
+                        (listarDescendenteString(nodo.izq).isEmpty() ? "" : "|" + listarAscendenteString(nodo.izq));
+    }
 
 
     protected class NodoABB<Q> {

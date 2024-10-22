@@ -256,6 +256,59 @@ void RegistrarJugadorEnEquipo() {
 
 
     }
+    @Test
+    void listarEquiposDescendente() {
+        Sistema sistema = new ImplementacionSistema();
 
+        // Inicializar el sistema
+        Retorno retorno = sistema.inicializarSistema(4);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Registrar equipos
+        retorno = sistema.registrarEquipo("Nacional", "Lasarte");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarEquipo("Defensor", "Peluso");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarEquipo("Aston Birra", "Felipe");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarEquipo("Liverpool", "Gonzalez");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Registrar jugadores
+        retorno = sistema.registrarJugador("AliBecker", "Alisson", "Rodriguez", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.agregarJugadorAEquipo("Nacional", "AliBecker");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarJugador("MoSalah", "Mohamed", "ElSherif", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.agregarJugadorAEquipo("Liverpool", "MoSalah");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarJugador("BigVirgil", "Virgil", "Jones", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.agregarJugadorAEquipo("Liverpool", "BigVirgil");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarJugador("BobbyFirmino", "Roberto", "Silva", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.agregarJugadorAEquipo("Liverpool", "BobbyFirmino");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Listar equipos en orden descendente
+        retorno = sistema.listarEquiposDescendente();
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Comparar el resultado esperado
+        String esperado = "Nacional;Lasarte;1|Liverpool;Gonzalez;3|Defensor;Peluso;0|Aston Birra;Felipe;0|";
+        assertEquals(esperado, retorno.getValorString());
+    }
 
 }

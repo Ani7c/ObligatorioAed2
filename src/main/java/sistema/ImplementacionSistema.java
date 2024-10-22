@@ -134,7 +134,8 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno listarEquiposDescendente() {
-        return Retorno.noImplementada();
+        String EquiposListado = ABBEquipo.listarDescendenteString();
+        return Retorno.ok(EquiposListado);
     }
 
     @Override

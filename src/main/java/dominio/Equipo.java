@@ -39,6 +39,13 @@ public class Equipo implements Comparable<Equipo>  {
     }
 
     @Override
+    public String toString() {
+
+        int cantidadJugadores = this.getCantJugadoresdelEquipo();
+        return this.nombre + ";" + this.manager + ";" + cantidadJugadores + ";";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
