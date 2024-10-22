@@ -78,7 +78,7 @@ public class ImplementacionSistema implements Sistema {
         if(nombre == "" || manager == "") {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
-        Equipo nuevoEquipo = new Equipo(nombre,manager);
+        Equipo nuevoEquipo = new Equipo(manager,nombre);
         Equipo equipoBuscado = ABBEquipo.buscar(nuevoEquipo);
         if(equipoBuscado != null) {
             return Retorno.error2("Ya existe un equipo registrado con ese nombre");
@@ -89,7 +89,32 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno agregarJugadorAEquipo(String nombreEquipo, String aliasJugador) {
-        return Retorno.noImplementada();
+        if(nombreEquipo == "" || aliasJugador == ""|| aliasJugador == null||nombreEquipo == null) {
+            return Retorno.error1("Los parametros no pueden ser vacios o nullos");
+        }
+        Equipo equipo = new Equipo(nombreEquipo);
+        Equipo equipoBuscado = ABBEquipo.buscar(equipo);
+        if(equipoBuscado == null) {
+            return Retorno.error2("No existe equipo con este nombre");
+        }
+        Jugador jugador = new Jugador(aliasJugador);
+        Jugador jugadorBuscado = ABBJugador.buscar(jugador);
+        if(jugadorBuscado == null) {
+            return Retorno.error3("No existe un jugador con ese alias");
+        }
+        if(equipoBuscado.getCantJugadoresdelEquipo() >= 5 ){
+            return Retorno.error4("el equipo ya tiene 5 integrantes");
+        }
+        if(jugadorBuscado.getCategoria()!= Categoria.PROFESIONAL){
+            return Retorno.error5("El jugador no es profesional");
+        }
+        if(jugadorBuscado.getEquipoActual()!= null){
+            return Retorno.error6("El jugador ya existe un equipo");
+        }
+        equipoBuscado.getJugadoresdelEquipo().insertar(jugadorBuscado);
+        jugadorBuscado.setEquipoActual(equipo);
+        return Retorno.ok();
+
     }
 
     @Override
