@@ -37,7 +37,7 @@ public class ImplementacionSistema implements Sistema {
         if(jugadorBuscado != null) {
             return Retorno.error2("Ya existe un jugador registrado con ese alias");
         }
-            nuevoJugador.setAlias(alias);
+
             nuevoJugador.setCategoria(categoria);
             nuevoJugador.setApellido(apellido);
             nuevoJugador.setNombre(nombre);
@@ -65,7 +65,18 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno registrarEquipo(String nombre, String manager) {
-        return Retorno.noImplementada();
+        //    1. Si alguno de los parámetros es vacío o null.
+        //  2. Si ya existe un Equipo registrado con ese nombre.
+        if(nombre == "" || manager == "") {
+            return Retorno.error1("Los parametros no pueden ser vacios");
+        }
+        Equipo nuevoEquipo = new Equipo(nombre,manager);
+        Equipo equipoBuscado = ABBEquipo.buscar(nuevoEquipo);
+        if(equipoBuscado != null) {
+            return Retorno.error2("Ya existe un equipo registrado con ese nombre");
+        }
+        ABBEquipo.insertar(nuevoEquipo);
+        return Retorno.ok();
     }
 
     @Override
