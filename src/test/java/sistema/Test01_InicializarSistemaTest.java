@@ -40,7 +40,7 @@ public class Test01_InicializarSistemaTest {
     }
 
     @Test
-    void RegistrarJugador() {
+    void RegistraryBuscarJugador() {
         Sistema sistema = new ImplementacionSistema();
 
         retorno = sistema.inicializarSistema(4);
@@ -57,6 +57,16 @@ public class Test01_InicializarSistemaTest {
 
         retorno= sistema.registrarJugador("jose77", "Jose", "Artigas", null);
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno= sistema.buscarJugador("jose77");
+        assertEquals("jose77;Jose;Artigas;PROFESIONAL",retorno.getValorString());
+        assertEquals(1,retorno.getValorInteger());
+
+        retorno= sistema.buscarJugador("");
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno= sistema.buscarJugador("pepepe");
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
     @Test
     void RegistrarEquipo() {
@@ -75,5 +85,7 @@ public class Test01_InicializarSistemaTest {
         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
 
     }
+
+
 
 }
