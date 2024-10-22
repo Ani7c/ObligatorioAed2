@@ -242,7 +242,7 @@ void RegistrarJugadorEnEquipo() {
         retorno = sistema.listarJugadoresDeEquipo("Manchester City");
          assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-    // Resultado esperado
+        // Resultado esperado
         String resultadoEsperado = "KevinDeBruyne;Kevin;De Bruyne;PROFESIONAL|RubenDias;Ruben;Dias;PROFESIONAL";
         assertEquals(resultadoEsperado, retorno.getValorString());
 
