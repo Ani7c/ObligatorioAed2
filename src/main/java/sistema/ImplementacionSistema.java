@@ -50,7 +50,15 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno buscarJugador(String alias) {
-        return Retorno.noImplementada();
+        if(alias == "" || alias == null) {
+            return Retorno.error1("Los parametros no pueden ser vacios o null");
+        }
+        Jugador jugadorBuscado = new Jugador(alias);
+        Retorno ret = ABBJugador.buscarconretorno(jugadorBuscado);
+        if(ret.getValorString()==null) {
+            return Retorno.error2("No existe un jugador con ese alias");
+        }
+        return Retorno.ok(ret.getValorInteger(), ret.getValorString());
     }
 
     @Override

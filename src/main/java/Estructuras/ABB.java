@@ -44,6 +44,25 @@ public class ABB<T extends Comparable<T>>{
         return null;
     }
 
+    public Retorno buscarconretorno(T dato) {
+        return buscarconretorno(dato, raiz,0);
+    }
+    // Método auxiliar para la búsqueda recursiva
+    private Retorno buscarconretorno(T dato, NodoABB<T> nodo, int nodosRecorridos) {
+        if (nodo != null) {
+            nodosRecorridos++; // Contamos cada nodo recorrido
+            if (nodo.dato.equals(dato)) {
+                // Si encuentra el dato, retorna el valorString con el toString del dato y el número de nodos recorridos
+                return Retorno.ok(nodosRecorridos, nodo.dato.toString());
+            } else if (nodo.dato.compareTo(dato) > 0) {
+                return buscarconretorno(dato, nodo.izq, nodosRecorridos);
+            } else {
+                return buscarconretorno(dato, nodo.der, nodosRecorridos);
+            }
+        }
+        // Si no se encuentra el dato, retorna null y el número de nodos recorridos
+        return  Retorno.ok(nodosRecorridos,null);
+    }
     public String listarAscendenteString() {
         return listarAscendenteString(raiz);
     }

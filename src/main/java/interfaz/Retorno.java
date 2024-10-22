@@ -21,6 +21,7 @@ public class Retorno {
         this.valorString = valorString;
     }
 
+
     public Resultado getResultado() {
         return resultado;
     }

@@ -1,11 +1,14 @@
 package dominio;
 
+import Estructuras.ABB;
+
 import java.util.Objects;
 
 public class Equipo implements Comparable<Equipo>  {
 
     private String manager;
     private String nombre;
+    private ABB<Jugador> jugadoresdelEquipo;
 
     public Equipo(String manager, String nombre) {
         this.manager = manager;
@@ -27,6 +30,9 @@ public class Equipo implements Comparable<Equipo>  {
     public String getNombre() {
         return nombre;
     }
+    //public int getJugadoresdelEquipo() {
+       // return jugadoresdelEquipo.size(),
+    //}
 
     @Override
     public boolean equals(Object o) {
