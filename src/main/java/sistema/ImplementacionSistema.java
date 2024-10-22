@@ -119,7 +119,17 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno listarJugadoresDeEquipo(String nombreEquipo) {
-        return Retorno.noImplementada();
+        if(nombreEquipo=="" || nombreEquipo == null) {
+            return Retorno.error1("Los parametros no pueden ser vacios o nullos");
+        }
+        Equipo equipo = new Equipo(nombreEquipo);
+        Equipo equipoBuscado = ABBEquipo.buscar(equipo);
+        if(equipoBuscado == null) {
+            return Retorno.error2("No existe equipo con este nombre");
+        }
+        String jugadoresListados = equipoBuscado.getJugadoresdelEquipo().listarAscendenteString();
+        System.out.println(jugadoresListados);
+        return Retorno.ok(jugadoresListados);
     }
 
     @Override

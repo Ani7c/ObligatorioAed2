@@ -76,11 +76,13 @@ public class ABB<T extends Comparable<T>>{
     }
 
     private String listarAscendenteString(NodoABB<T> nodo) {
-        if (nodo != null) {
-            return listarAscendenteString(nodo.izq) + "|" + nodo.dato + "|" + listarAscendenteString(nodo.der);
-        }
-        return "";
+        return nodo == null ? "" :
+                listarAscendenteString(nodo.izq) +
+                        (listarAscendenteString(nodo.izq).isEmpty() ? "" : "|") +
+                        nodo.dato +
+                        (listarAscendenteString(nodo.der).isEmpty() ? "" : "|" + listarAscendenteString(nodo.der));
     }
+
 
 
     protected class NodoABB<Q> {
