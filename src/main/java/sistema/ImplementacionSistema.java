@@ -135,6 +135,7 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno listarEquiposDescendente() {
         String EquiposListado = ABBEquipo.listarDescendenteString();
+        System.out.println(EquiposListado);
         return Retorno.ok(EquiposListado);
     }
 

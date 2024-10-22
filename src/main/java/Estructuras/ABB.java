@@ -85,13 +85,20 @@ public class ABB<T extends Comparable<T>>{
     public String listarDescendenteString() {
         return listarDescendenteString(raiz);
     }
-    //doy vuelta los subarboles
+
     private String listarDescendenteString(NodoABB<T> nodo) {
-        return nodo == null ? "" :
-                listarDescendenteString(nodo.der) +
-                        (listarDescendenteString(nodo.der).isEmpty() ? "" : "|") +
-                        nodo.dato +
-                        (listarDescendenteString(nodo.izq).isEmpty() ? "" : "|" + listarAscendenteString(nodo.izq));
+        if (nodo == null) {
+            return "";
+        }
+
+        String derecho = listarDescendenteString(nodo.der);
+        String izquierdo = listarDescendenteString(nodo.izq);
+
+        String resultado = (derecho.isEmpty() ? "" : derecho + "|") +
+                nodo.dato +
+                (izquierdo.isEmpty() ? "" : "|" + izquierdo);
+
+        return resultado;
     }
 
 

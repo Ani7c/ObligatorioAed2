@@ -42,7 +42,7 @@ public class Equipo implements Comparable<Equipo>  {
     public String toString() {
 
         int cantidadJugadores = this.getCantJugadoresdelEquipo();
-        return this.nombre + ";" + this.manager + ";" + cantidadJugadores + ";";
+        return this.nombre + ";" + this.manager + ";" + cantidadJugadores ;
     }
 
     @Override

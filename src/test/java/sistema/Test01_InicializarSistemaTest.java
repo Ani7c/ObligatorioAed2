@@ -307,7 +307,7 @@ void RegistrarJugadorEnEquipo() {
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
         // Comparar el resultado esperado
-        String esperado = "Nacional;Lasarte;1|Liverpool;Gonzalez;3|Defensor;Peluso;0|Aston Birra;Felipe;0|";
+        String esperado = "Nacional;Lasarte;1|Liverpool;Gonzalez;3|Defensor;Peluso;0|Aston Birra;Felipe;0";
         assertEquals(esperado, retorno.getValorString());
     }
 
