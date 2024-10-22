@@ -4,6 +4,7 @@ import java.util.Objects;
 
 
 public class Retorno {
+
     public enum Resultado {
         OK, 
         ERROR_1, ERROR_2, ERROR_3, ERROR_4, ERROR_5, ERROR_6, ERROR_7, ERROR_8,
@@ -14,7 +15,7 @@ public class Retorno {
     private final Integer valorInteger;
     private final String valorString;
 
-    private Retorno(Resultado resultado, Integer valorInteger, String valorString) {
+    public Retorno(Resultado resultado, Integer valorInteger, String valorString) {
         this.resultado = resultado;
         this.valorInteger = valorInteger;
         this.valorString = valorString;

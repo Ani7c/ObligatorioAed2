@@ -13,10 +13,11 @@ public class ImplementacionSistema implements Sistema {
     private ABB<Jugador> ABBJugador;
 
 
-
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
-        if(maxSucursales <= 3) { return Retorno.error1("La cantidad de sucursales debe ser mayor a 3");}
+        if (maxSucursales <= 3) {
+            return Retorno.error1("La cantidad de sucursales debe ser mayor a 3");
+        }
         ABBEquipo = new ABB<Equipo>();
         ABBJugador = new ABB<Jugador>();
         //inicializar las sucursales
@@ -27,29 +28,27 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno registrarJugador(String alias, String nombre, String apellido, Categoria categoria) {
 
-    //    1. Si alguno de los parámetros es vacío o null.
-      //  2. Si ya existe un jugador registrado con ese alias.
-        Jugador nuevoJugador = new Jugador(alias);
-        if(alias == "" || nombre == "" || apellido == "" || categoria == null) {
+        //    1. Si alguno de los parámetros es vacío o null.
+        //  2. Si ya existe un jugador registrado con ese alias.
+        Jugador nuevoJugador = new Jugador(alias, nombre, apellido, categoria);
+        if (alias == "" || nombre == "" || apellido == "" || categoria == null) {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
         Jugador jugadorBuscado = ABBJugador.buscar(nuevoJugador);
-        if(jugadorBuscado != null) {
+        if (jugadorBuscado != null) {
             return Retorno.error2("Ya existe un jugador registrado con ese alias");
         }
-            nuevoJugador.setAlias(alias);
-            nuevoJugador.setCategoria(categoria);
-            nuevoJugador.setApellido(apellido);
-            nuevoJugador.setNombre(nombre);
-            ABBJugador.insertar(nuevoJugador);
+        ABBJugador.insertar(nuevoJugador);
         return Retorno.ok();
-
-        }
-
-
+    }
 
     @Override
     public Retorno buscarJugador(String alias) {
+        Jugador jugadorBuscado = ABBJugador.buscar(new Jugador(alias));
+        if (jugadorBuscado != null) {
+            StringBuilder resultado = new StringBuilder();
+            resultado.append(jugadorBuscado.toString());
+        }
         return Retorno.noImplementada();
     }
 
