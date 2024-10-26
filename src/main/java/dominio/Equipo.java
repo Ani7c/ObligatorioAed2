@@ -13,6 +13,10 @@ public class Equipo implements Comparable<Equipo>  {
     public Equipo(String manager, String nombre) {
         this.manager = manager;
         this.nombre = nombre;
+        this.jugadoresdelEquipo = new ABB<>();
+    }
+    public Equipo(String nombre) {
+        this.nombre = nombre;
     }
 
     public void setManager(String manager) {
@@ -30,9 +34,16 @@ public class Equipo implements Comparable<Equipo>  {
     public String getNombre() {
         return nombre;
     }
-    //public int getJugadoresdelEquipo() {
-       // return jugadoresdelEquipo.size(),
-    //}
+    public int getCantJugadoresdelEquipo() {
+       return jugadoresdelEquipo.size();
+    }
+
+    @Override
+    public String toString() {
+
+        int cantidadJugadores = this.getCantJugadoresdelEquipo();
+        return this.nombre + ";" + this.manager + ";" + cantidadJugadores ;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -42,6 +53,10 @@ public class Equipo implements Comparable<Equipo>  {
         return Objects.equals(nombre, equipo.nombre);
     }
 
+    public ABB<Jugador> getJugadoresdelEquipo() {
+        return jugadoresdelEquipo;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(nombre);
@@ -49,6 +64,6 @@ public class Equipo implements Comparable<Equipo>  {
 
     @Override
     public int compareTo(Equipo o) {
-        return o.nombre.compareTo(this.nombre); // Cambiamos el orden para decreciente
+        return this.nombre.compareTo(o.nombre);
     }
 }

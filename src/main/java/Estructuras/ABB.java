@@ -5,24 +5,32 @@ import interfaz.Retorno;
 public class ABB<T extends Comparable<T>>{
 
     protected NodoABB<T> raiz;
+    protected int cantidad = 0;
+
+    public int size(){
+        return cantidad;
+    }
 
     public void insertar(T dato) {
-        if (raiz == null)
+        if (raiz == null) {
             raiz = new NodoABB<>(dato);
-        else
+            cantidad++;
+        }else
             insertarRec(dato, raiz);
     }
 
     private void insertarRec(T dato, NodoABB<T> nodo) {
         if (nodo.dato.compareTo(dato) > 0) {
-            if (nodo.izq == null)
+            if (nodo.izq == null) {
                 nodo.izq = new NodoABB<>(dato);
-            else
+                cantidad++;
+            }else
                 insertarRec(dato, nodo.izq);
         } else if (nodo.dato.compareTo(dato) < 0) {
-            if (nodo.der == null)
+            if (nodo.der == null) {
                 nodo.der = new NodoABB<>(dato);
-            else
+                cantidad++;
+            }else
                 insertarRec(dato, nodo.der);
         }
     }
@@ -68,10 +76,29 @@ public class ABB<T extends Comparable<T>>{
     }
 
     private String listarAscendenteString(NodoABB<T> nodo) {
-        if (nodo != null) {
-            return listarAscendenteString(nodo.izq) + "|" + nodo.dato + "|" + listarAscendenteString(nodo.der);
+        return nodo == null ? "" :
+                listarAscendenteString(nodo.izq) +
+                        (listarAscendenteString(nodo.izq).isEmpty() ? "" : "|") +
+                        nodo.dato +
+                        (listarAscendenteString(nodo.der).isEmpty() ? "" : "|" + listarAscendenteString(nodo.der));
+    }
+    public String listarDescendenteString() {
+        return listarDescendenteString(raiz);
+    }
+
+    private String listarDescendenteString(NodoABB<T> nodo) {
+        if (nodo == null) {
+            return "";
         }
-        return "";
+
+        String derecho = listarDescendenteString(nodo.der);
+        String izquierdo = listarDescendenteString(nodo.izq);
+
+        String resultado = (derecho.isEmpty() ? "" : derecho + "|") +
+                nodo.dato +
+                (izquierdo.isEmpty() ? "" : "|" + izquierdo);
+
+        return resultado;
     }
 
 
