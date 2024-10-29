@@ -1,6 +1,7 @@
 package sistema;
 
 import Estructuras.ABB;
+import Estructuras.Lista;
 import dominio.Equipo;
 import dominio.Jugador;
 import dominio.Categoria;
@@ -63,8 +64,10 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno listarJugadoresAscendente() {
-        return Retorno.noImplementada();
+            String resultado = ABBJugador.listarAscendenteString();
+            return Retorno.ok(resultado);
     }
+
 
     @Override
     public Retorno listarJugadoresPorCategoria(Categoriadd unaCategoria) {

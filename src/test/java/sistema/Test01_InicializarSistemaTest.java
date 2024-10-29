@@ -254,7 +254,6 @@ void RegistrarJugadorEnEquipo() {
         retorno = sistema.listarJugadoresDeEquipo("");
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
 
-
     }
     @Test
     void listarEquiposDescendente() {

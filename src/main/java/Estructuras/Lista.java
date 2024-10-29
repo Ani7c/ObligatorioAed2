@@ -22,7 +22,9 @@ public class Lista<T extends Comparable<T>> {
         }
     }
 
-
+    public boolean esVacia() {
+        return inicio == null;
+    }
 
     class NodoLista<T> {
         private T dato;
