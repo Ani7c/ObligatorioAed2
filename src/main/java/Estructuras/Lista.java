@@ -1,6 +1,10 @@
 package Estructuras;
 
-public class Lista<T extends Comparable<T>> {
+import interfaz.ILista;
+
+import java.util.Iterator;
+
+public class Lista<T> implements ILista <T>{
 
     protected NodoLista<T> inicio;
     protected int largo;
@@ -15,15 +19,80 @@ public class Lista<T extends Comparable<T>> {
         largo++;
     }
 
-    public void imprimirDatos(NodoLista<T> nodo) {
-        if (nodo != null) {
-            System.out.println(nodo.getDato());
-            imprimirDatos(nodo.getSig());
+    @Override
+    public void borrar(T dato) {
+
+    }
+
+    public T recuperar(T dato) {
+        NodoLista<T> aux = inicio;
+        while (aux != null) {
+            if (aux.getDato().equals(dato)) {
+                return aux.getDato();
+            }
+            aux = aux.getSig();
         }
+        return null;
+    }
+
+
+    public int largo() {
+        return largo;
+    }
+
+    public boolean existe(T dato) {
+        NodoLista<T> aux = inicio;
+        while (aux != null) {
+            if (aux.getDato().equals(dato)) {
+                return true;
+            }
+            aux = aux.getSig();
+        }
+        return false;
+    }
+    public boolean esLlena() {
+        return false;
+    }
+
+    @Override
+    public void imprimirDatos() {
+        NodoLista<T> aux = inicio;
+        while (aux != null) {
+            if (aux.getSig() != null){
+                System.out.print(aux.getDato() + " -> ");
+            }else{
+                System.out.print(aux.getDato());
+            }
+            aux = aux.getSig();
+        }
+        System.out.println();
     }
 
     public boolean esVacia() {
         return inicio == null;
+    }
+
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private NodoLista<T> aux = inicio;
+
+            @Override
+            public boolean hasNext() {
+                return aux != null;
+            }
+
+            @Override
+            public T next() {
+                T dato = aux.dato;
+                aux = aux.sig;
+                return dato;
+            }
+
+            @Override
+            public void remove() {
+            }
+
+        };
     }
 
     class NodoLista<T> {
