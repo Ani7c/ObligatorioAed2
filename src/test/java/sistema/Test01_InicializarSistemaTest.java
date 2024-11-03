@@ -355,4 +355,65 @@ void RegistrarJugadorEnEquipo() {
 
 
     }
+
+    @Test
+    void registrarConexion() {
+        Sistema sistema = new ImplementacionSistema();
+        // Inicializar el sistema
+        Retorno retorno = sistema.inicializarSistema(4);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Agregar sucursales para usar en las conexiones
+        retorno = sistema.registrarSucursal("001", "Uruguay");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarSucursal("002", "Argentina");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarSucursal("003", "Brasil");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Intentar registrar una conexión con latencia negativa
+        retorno = sistema.registrarConexion("001", "002", -10);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        // Intentar registrar una conexión con códigos de sucursales vacíos
+        retorno = sistema.registrarConexion("", "002", 10);
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        retorno = sistema.registrarConexion("001", "", 10);
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        // Intentar registrar una conexión con códigos de sucursales nulos
+        retorno = sistema.registrarConexion(null, "002", 10);
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        retorno = sistema.registrarConexion("001", null, 10);
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        // Intentar registrar una conexión con una sucursal inexistente
+        retorno = sistema.registrarConexion("001", "004", 10);
+        assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
+
+        retorno = sistema.registrarConexion("004", "002", 10);
+        assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
+
+        // Registrar conexiones válidas entre las tres sucursales
+        retorno = sistema.registrarConexion("001", "002", 10);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarConexion("002", "003", 15);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarConexion("001", "003", 20);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Intentar registrar una conexión ya existente entre 001 y 002
+        retorno = sistema.registrarConexion("001", "002", 10);
+        assertEquals(Retorno.Resultado.ERROR_4, retorno.getResultado());
+
+        // Intentar registrar la conexión inversa (debería dar error por ser bidireccional)
+        retorno = sistema.registrarConexion("003", "001", 20);
+        assertEquals(Retorno.Resultado.ERROR_4, retorno.getResultado());
+        }
 }
