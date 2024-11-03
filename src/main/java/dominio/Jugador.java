@@ -1,5 +1,7 @@
 package dominio;
 
+import interfaz.Categoria;
+
 import java.util.Objects;
 
 public class Jugador implements Comparable<Jugador> {

@@ -2,10 +2,8 @@ package sistema;
 
 import Estructuras.ABB;
 import Estructuras.Grafo;
-import Estructuras.Lista;
 import dominio.Equipo;
 import dominio.Jugador;
-import dominio.Categoria;
 import dominio.Sucursal;
 import interfaz.*;
 
@@ -75,7 +73,7 @@ public class ImplementacionSistema implements Sistema {
 
 
     @Override
-    public Retorno listarJugadoresPorCategoria(Categoriadd unaCategoria) {
+    public Retorno listarJugadoresPorCategoria(Categoria unaCategoria) {
         return Retorno.noImplementada();
     }
 

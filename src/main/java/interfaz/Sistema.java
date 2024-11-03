@@ -1,6 +1,5 @@
 package interfaz;
 
-import dominio.Categoria;
 
 /**
  * Provee una interfaz para interactuar con el sistema
@@ -16,7 +15,7 @@ public interface Sistema {
 
     Retorno listarJugadoresAscendente();
 
-    Retorno listarJugadoresPorCategoria(Categoriadd unaCategoria);
+    Retorno listarJugadoresPorCategoria(Categoria unaCategoria);
 
     Retorno registrarEquipo(String nombre, String manager);
 
