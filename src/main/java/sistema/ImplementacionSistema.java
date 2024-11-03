@@ -1,10 +1,12 @@
 package sistema;
 
 import Estructuras.ABB;
+import Estructuras.Grafo;
 import Estructuras.Lista;
 import dominio.Equipo;
 import dominio.Jugador;
 import dominio.Categoria;
+import dominio.Sucursal;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
@@ -12,15 +14,18 @@ public class ImplementacionSistema implements Sistema {
 
     private ABB<Equipo> ABBEquipo;
     private ABB<Jugador> ABBJugador;
-
+    private Grafo Sucursales;
+    private int maxSucursales;
 
 
     @Override
-    public Retorno inicializarSistema(int maxSucursales) {
-        if(maxSucursales <= 3) { return Retorno.error1("La cantidad de sucursales debe ser mayor a 3");}
+    public Retorno inicializarSistema(int maxSucursal) {
+        if(maxSucursal <= 3) { return Retorno.error1("La cantidad de sucursales debe ser mayor a 3");}
         ABBEquipo = new ABB<Equipo>();
         ABBJugador = new ABB<Jugador>();
-        //inicializar las sucursales
+        Sucursales = new Grafo(maxSucursal,false);
+        maxSucursales = maxSucursal;
+
 
         return Retorno.ok();
     }
@@ -144,7 +149,20 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno registrarSucursal(String codigo, String nombre) {
-        return Retorno.noImplementada();
+        if (Sucursales.getCantDeVertices() >= maxSucursales){
+            return Retorno.error1("No se pueden registrar mas sucursales");
+        }
+        if(codigo == null || nombre == null || codigo == "" || nombre == "") {
+            return Retorno.error2("Los parametros no pueden ser vacios o nullos");
+        }
+        Sucursal sucursal = new Sucursal(codigo, nombre);
+        int existe = Sucursales.obtenerPos(sucursal);
+        if(existe > -1) {
+            return Retorno.error3("ya existe una sucursal con ese código");
+        }
+
+        Sucursales.agregarSucursal(sucursal);
+        return Retorno.ok();
     }
 
     @Override

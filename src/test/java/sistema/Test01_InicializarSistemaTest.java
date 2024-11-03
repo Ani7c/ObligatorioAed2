@@ -309,5 +309,50 @@ void RegistrarJugadorEnEquipo() {
         String esperado = "Nacional;Lasarte;1|Liverpool;Gonzalez;3|Defensor;Peluso;0|Aston Birra;Felipe;0";
         assertEquals(esperado, retorno.getValorString());
     }
+    @Test
+    void agregarSucursal() {
+        Sistema sistema = new ImplementacionSistema();
+        // Inicializar el sistema
+        Retorno retorno = sistema.inicializarSistema(4);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
+        // Agregar la primera sucursal correctamente
+        retorno = sistema.registrarSucursal("001", "Uruguay ");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Agregar una segunda sucursal correctamente
+        retorno = sistema.registrarSucursal("002", "Argentina");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Intentar agregar una sucursal con el mismo código
+        retorno = sistema.registrarSucursal("001", "Brasil");
+        assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
+
+        // Intentar agregar una sucursal con parámetros vacíos
+        retorno = sistema.registrarSucursal("", "Sucursal Sin Código");
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        retorno = sistema.registrarSucursal("003", "");
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        // Intentar agregar una sucursal con parámetros nulos
+        retorno = sistema.registrarSucursal(null, "Sucursal Nula");
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        retorno = sistema.registrarSucursal("004", null);
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+        // Intentar agregar más sucursales de las permitidas
+        retorno = sistema.registrarSucursal("003", "Brasil");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        retorno = sistema.registrarSucursal("004", "Chile");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+
+        // Intentar agregar una sucursal cuando se ha alcanzado el límite máximo
+        retorno = sistema.registrarSucursal("005", "Peru");
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+
+    }
 }

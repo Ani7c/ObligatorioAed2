@@ -35,6 +35,11 @@ public class Grafo {
             }
         }
     }
+
+    public int getCantDeVertices() {
+        return cantDeVertices;
+    }
+
     public void agregarSucursal(Sucursal suc) {
         if (cantDeVertices < maxSucursales) {
             int posLibre = obtenerPosLibre();
@@ -130,6 +135,27 @@ public class Grafo {
             }
         }
     }
+    public boolean esPuntoCritico(Sucursal suc){
+        /*
+        - Obtener la posicion del Vertice vert.
+        - Ejecutar dfs(el metodo privado), pasando un array de visitados y la posicion de vert, luego
+        me quedo con el array de visitados que pasamos por parámetro para comparar luego.
+
+        - Hacer una copia de la matriz de aristas y quitarle todas las aristas asociadas a vert.
+
+        - Tengo que buscar el primer true del array de visitados anterior y me quedo con dicha posicion
+        para usar como vertice de inicio para la próxima ejecución de dfs.
+
+        - Ejecutar dfs con la posicion anterior, pero utilizando la copia de la matriz de aristas
+        y me quedo con su array de visitados.
+
+        - Comparo el array de visitados de ambas ejecuciones de dfs
+        teniendo en cuenta el no comparar la posicion del vertice vert.
+
+        - Si hay diferencias devuelvo true, ya que el vertice es un punto crítico.
+         */
+        return false;
+    }
 
 
     private int obtenerPosLibre() {
@@ -142,7 +168,7 @@ public class Grafo {
     }
 
 
-    private int obtenerPos(Sucursal suc) {
+    public int obtenerPos(Sucursal suc) {
         for (int i = 0; i < conexiones.length; i++) {
             if (sucursales[i] != null && sucursales[i].equals(suc)) {
                 return i;
