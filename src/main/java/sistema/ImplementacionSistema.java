@@ -3,7 +3,10 @@ package sistema;
 import Estructuras.ABB;
 import Estructuras.Grafo;
 import Estructuras.Lista;
-import dominio.*;
+import dominio.Equipo;
+import dominio.Jugador;
+import dominio.Categoria;
+import dominio.Sucursal;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
@@ -164,46 +167,12 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno registrarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
-        if(latencia < 0){
-            return Retorno.error1("Latencia debe ser mayor a 0");
-        }
-        if(codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1 == "" || codigoSucursal2 == "") {
-            return Retorno.error2("Los parametros no pueden ser vacios o nulos");
-        }
-        Sucursal sucursal1 = new Sucursal(codigoSucursal1);
-        Sucursal sucursal2 = new Sucursal(codigoSucursal2);
-        int existe1 = Sucursales.obtenerPos(sucursal1);
-        int existe2 = Sucursales.obtenerPos(sucursal2);
-        if(existe1 < 0 || existe2 < 0) {
-            return Retorno.error3("Sucursal inexistente");
-        }
-        if (Sucursales.obtenerConexion(sucursal1, sucursal2).isExiste()) {
-            return Retorno.error4("Ya existe una conexión entre las dos sucursales");
-        }
-        Conexion conexion = new Conexion(latencia);
-        Sucursales.agregarConexion(sucursal1,sucursal2,conexion);
-
-
-        return Retorno.ok();
+        return Retorno.noImplementada();
     }
 
     @Override
     public Retorno actualizarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
-        if(latencia < 0){
-            return Retorno.error1("Latencia debe ser mayor a 0");
-        }
-        if(codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1 == "" || codigoSucursal2 == "") {
-            return Retorno.error2("Los parametros no pueden ser vacios o nulos");
-        }
-        Sucursal sucursal1 = new Sucursal(codigoSucursal1);
-        Sucursal sucursal2 = new Sucursal(codigoSucursal2);
-        int existe1 = Sucursales.obtenerPos(sucursal1);
-        int existe2 = Sucursales.obtenerPos(sucursal2);
-        if(existe1 < 0 || existe2 < 0) {
-            return Retorno.error3("Sucursal inexistente");
-        }
-
-        return Retorno.ok();
+        return Retorno.noImplementada();
     }
 
     @Override
