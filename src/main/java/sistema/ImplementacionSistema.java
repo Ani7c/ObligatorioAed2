@@ -225,16 +225,24 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno actualizarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
-        if (latencia < 0) {
+        if(latencia < 0){
             return Retorno.error1("Latencia debe ser mayor a 0");
         }
-        if (codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1 == "" || codigoSucursal2 == "") {
+        if(codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1 == "" || codigoSucursal2 == "") {
             return Retorno.error2("Los parametros no pueden ser vacios o nulos");
         }
         Sucursal sucursal1 = new Sucursal(codigoSucursal1);
         Sucursal sucursal2 = new Sucursal(codigoSucursal2);
         int existe1 = Sucursales.obtenerPos(sucursal1);
         int existe2 = Sucursales.obtenerPos(sucursal2);
+        if(existe1 < 0 || existe2 < 0) {
+            return Retorno.error3("Sucursal inexistente");
+        }
+        Conexion conexion = Sucursales.obtenerConexion(sucursal1, sucursal2);
+        if(!conexion.isExiste()){
+            return Retorno.error4("No existe conexion entre las 2 sucursales");
+        }
+        conexion.setLatencia(latencia);
 
 
         return Retorno.ok();
