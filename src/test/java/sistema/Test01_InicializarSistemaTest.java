@@ -157,7 +157,7 @@ void RegistrarJugadorEnEquipo() {
     retorno = sistema.agregarJugadorAEquipo("Aston Birra","Capa");
     assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-    //Error 4 por agregar 6to jugador
+    //Error 4 por agregar 6to jugador;
     retorno = sistema.agregarJugadorAEquipo("Aston Birra","ElSexto");
     assertEquals(Retorno.Resultado.ERROR_4, retorno.getResultado());
 
