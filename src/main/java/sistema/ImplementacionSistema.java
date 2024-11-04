@@ -185,7 +185,7 @@ public class ImplementacionSistema implements Sistema {
         if (Sucursales.getCantDeVertices() >= maxSucursales) {
             return Retorno.error1("No se pueden registrar mas sucursales");
         }
-        if (codigo == null || nombre == null || codigo == "" || nombre == "") {
+        if (codigo == null || nombre == null || codigo.isEmpty()  || nombre.isEmpty()) {
             return Retorno.error2("Los parametros no pueden ser vacios o nullos");
         }
         Sucursal sucursal = new Sucursal(codigo, nombre);
