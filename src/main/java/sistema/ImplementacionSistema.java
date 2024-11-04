@@ -44,7 +44,7 @@ public class ImplementacionSistema implements Sistema {
         //    1. Si alguno de los parámetros es vacío o null.
         //  2. Si ya existe un jugador registrado con ese alias.
         Jugador nuevoJugador = new Jugador(alias);
-        if (alias == "" || nombre == "" || apellido == "" || categoria == null) {
+        if (alias == "" || nombre == "" || apellido == "" || categoria == null || alias == null || nombre == null || apellido == null ) {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
         Jugador jugadorBuscado = ABBJugador.buscar(nuevoJugador);
@@ -72,7 +72,7 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno buscarJugador(String alias) {
-        if (alias == "" || alias == null) {
+        if (alias == null || alias.isEmpty()) {
             return Retorno.error1("Los parametros no pueden ser vacios o null");
         }
         Jugador jugadorBuscado = new Jugador(alias);
@@ -116,7 +116,7 @@ public class ImplementacionSistema implements Sistema {
     public Retorno registrarEquipo(String nombre, String manager) {
         //    1. Si alguno de los parámetros es vacío o null.
         //  2. Si ya existe un Equipo registrado con ese nombre.
-        if (nombre == "" || manager == "") {
+        if (nombre == "" || manager == "" || nombre == null || manager == null) {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
         Equipo nuevoEquipo = new Equipo(manager, nombre);
