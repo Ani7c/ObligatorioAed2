@@ -160,7 +160,7 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno listarJugadoresDeEquipo(String nombreEquipo) {
-        if (nombreEquipo == "" || nombreEquipo == null) {
+        if (nombreEquipo == null || nombreEquipo.isEmpty()) {
             return Retorno.error1("Los parametros no pueden ser vacios o nullos");
         }
         Equipo equipo = new Equipo(nombreEquipo);
