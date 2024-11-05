@@ -280,22 +280,32 @@ public class ImplementacionSistema implements Sistema {
         ILista<Sucursal> seleccionadas = new Lista<>();
         Iterator<Sucursal> it = visitadas.iterator();
         int latenciaMaxima = Integer.MIN_VALUE;
-        while (it.hasNext()) {
+
+        if(it.hasNext()) {
+            Sucursal actual = it.next();
+            while (it.hasNext()) {
 
 
-            Sucursal sucursalVisitada = it.next();
-            Conexion con = Sucursales.obtenerConexion(sucursalVisitada,sucursal );
+                Sucursal siguiente = it.next();
+                Conexion con = Sucursales.obtenerConexion(actual, siguiente);
 
-            // Verificar si la conexión es válida y si la latencia está dentro del límite
-            if (con != null && con.getLatencia() <= latenciaLimite) {
-                seleccionadas.insertarOrdenado(sucursalVisitada);
-                if (con.getLatencia() > latenciaMaxima) {
-                    latenciaMaxima = con.getLatencia();
+
+                // Verificar si la conexión es válida y si la latencia está dentro del límite
+                if (con != null && con.getLatencia() <= latenciaLimite) {
+                    seleccionadas.insertarOrdenado(actual);
+                    if (con.getLatencia() > latenciaMaxima) {
+                        latenciaMaxima = con.getLatencia();
+                    }
                 }
+                actual = siguiente;
+
             }
-            sucursal = sucursalVisitada;
+            seleccionadas.insertarOrdenado(actual);
+
         }
         String listadoSucursales = seleccionadas.toString();
         return Retorno.ok(latenciaMaxima, listadoSucursales);
     }
+
 }
+
