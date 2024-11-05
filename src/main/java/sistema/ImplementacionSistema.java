@@ -9,6 +9,8 @@ import dominio.Jugador;
 import dominio.Sucursal;
 import interfaz.*;
 
+import java.util.Iterator;
+
 public class ImplementacionSistema implements Sistema {
 
 
@@ -250,11 +252,49 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno analizarSucursal(String codigoSucursal) {
-        return Retorno.noImplementada();
+        if(codigoSucursal == null || codigoSucursal.isEmpty()) {
+            return Retorno.error1("Los parametros no pueden ser vacios o nulos");
+        }
+        Sucursal sucursal = new Sucursal(codigoSucursal);
+        int existe = Sucursales.obtenerPos(sucursal);
+        if(existe < 0) {
+            return Retorno.error2("Sucursal inexistente");
+        }
+        return Retorno.ok(); //Todo implementar la parte de ok
     }
 
     @Override
     public Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int latenciaLimite) {
-        return Retorno.noImplementada();
+        if(codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
+            return Retorno.error1("codigoSucursalAnfitriona no pueden ser vacios nulos");
+        }
+        Sucursal sucursal = new Sucursal(codigoSucursalAnfitriona);
+        int existe = Sucursales.obtenerPos(sucursal);
+        if(existe < 0) {
+            return Retorno.error2("Sucursal inexistente");
+        }
+        if(latenciaLimite <= 0){
+            return Retorno.error3("Latencia debe ser mayor a 0");
+        }
+        ILista<Sucursal> adyacentes = Sucursales.adyacentes(sucursal);
+        ILista<Sucursal> seleccionadas = new Lista<>();
+        Iterator<Sucursal> it = adyacentes.iterator();
+        int latenciaMaxima = Integer.MIN_VALUE;
+        while (it.hasNext()) {
+            Sucursal sucursalAdyacente = it.next();
+
+            // Obtener la conexión entre la sucursal anfitriona y la adyacente
+            Conexion con = Sucursales.obtenerConexion(sucursal, sucursalAdyacente);
+
+            // Verificar si la conexión es válida y si la latencia está dentro del límite
+            if (con != null && con.getLatencia() <= latenciaLimite) {
+                seleccionadas.insertarOrdenado(sucursalAdyacente);
+                if (con.getLatencia() > latenciaMaxima) {
+                    latenciaMaxima = con.getLatencia();
+                }
+            }
+        }
+        String listadoSucursales = seleccionadas.toString();
+        return Retorno.ok(latenciaMaxima, listadoSucursales);
     }
 }

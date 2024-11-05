@@ -2,7 +2,7 @@ package dominio;
 
 import java.util.Objects;
 
-public class Sucursal {
+public class Sucursal implements Comparable<Sucursal> {
 
     private String codigo;
     private String nombre;
@@ -38,10 +38,12 @@ public class Sucursal {
 
     @Override
     public String toString() {
-        return "Sucursal{" +
-                "codigo='" + codigo + '\'' +
-                ", nombre='" + nombre + '\'' +
-                '}';
+        return codigo + ";" + nombre;
+    }
+
+    @Override
+    public int compareTo(Sucursal o) {
+        return this.codigo.compareTo(o.codigo);
     }
 
     @Override
@@ -51,6 +53,7 @@ public class Sucursal {
         Sucursal sucursal = (Sucursal) o;
         return Objects.equals(codigo, sucursal.codigo);
     }
+
 
     @Override
     public int hashCode() {

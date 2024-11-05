@@ -10,4 +10,6 @@ public interface ILista<T>{
     boolean esLlena();
     void imprimirDatos();
     Iterator<T> iterator();
+    void insertarOrdenado(T dato);
+    String toString();
 }

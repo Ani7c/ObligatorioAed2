@@ -18,6 +18,25 @@ public class Lista<T> implements ILista <T>{
         inicio = new NodoLista<T>(dato, inicio);
         largo++;
     }
+    public void insertarOrdenado(T dato) {
+        NodoLista<T> nuevoNodo = new NodoLista<>(dato);
+
+        // Caso 1: Lista vacía o el dato debe ser el nuevo primer elemento
+        if (esVacia() || ((Comparable<T>) dato).compareTo(inicio.getDato()) < 0) {
+            nuevoNodo.sig = inicio;
+            inicio = nuevoNodo;
+        } else {
+            // Caso 2: Insertar en la posición correcta (no al principio)
+            NodoLista<T> actual = inicio;
+            while (actual.sig != null && ((Comparable<T>) dato).compareTo(actual.sig.getDato()) > 0) {
+                actual = actual.sig;
+            }
+            // Insertar el nuevo nodo en la posición encontrada
+            nuevoNodo.sig = actual.sig;
+            actual.sig = nuevoNodo;
+        }
+        largo++;
+    }
 
     @Override
     public void borrar(T dato) {
@@ -93,6 +112,19 @@ public class Lista<T> implements ILista <T>{
             }
 
         };
+    }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        NodoLista<T> aux = inicio;
+
+        while (aux != null) {
+            sb.append(aux.getDato().toString()); // Llama al toString de Sucursal
+            aux = aux.getSig();
+            if (aux != null) {
+                sb.append("|");
+            }
+        }
+        return sb.toString();
     }
 
     class NodoLista<T> {
