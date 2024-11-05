@@ -276,23 +276,24 @@ public class ImplementacionSistema implements Sistema {
         if(latenciaLimite <= 0){
             return Retorno.error3("Latencia debe ser mayor a 0");
         }
-        ILista<Sucursal> adyacentes = Sucursales.adyacentes(sucursal);
+        ILista<Sucursal> visitadas = Sucursales.bfs(sucursal);
         ILista<Sucursal> seleccionadas = new Lista<>();
-        Iterator<Sucursal> it = adyacentes.iterator();
+        Iterator<Sucursal> it = visitadas.iterator();
         int latenciaMaxima = Integer.MIN_VALUE;
         while (it.hasNext()) {
-            Sucursal sucursalAdyacente = it.next();
 
-            // Obtener la conexión entre la sucursal anfitriona y la adyacente
-            Conexion con = Sucursales.obtenerConexion(sucursal, sucursalAdyacente);
+
+            Sucursal sucursalVisitada = it.next();
+            Conexion con = Sucursales.obtenerConexion(sucursalVisitada,sucursal );
 
             // Verificar si la conexión es válida y si la latencia está dentro del límite
             if (con != null && con.getLatencia() <= latenciaLimite) {
-                seleccionadas.insertarOrdenado(sucursalAdyacente);
+                seleccionadas.insertarOrdenado(sucursalVisitada);
                 if (con.getLatencia() > latenciaMaxima) {
                     latenciaMaxima = con.getLatencia();
                 }
             }
+            sucursal = sucursalVisitada;
         }
         String listadoSucursales = seleccionadas.toString();
         return Retorno.ok(latenciaMaxima, listadoSucursales);

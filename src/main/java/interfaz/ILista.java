@@ -1,4 +1,6 @@
 package interfaz;
+import Estructuras.Lista;
+
 import java.util.Iterator;
 public interface ILista<T>{
     void insertar(T dato);
@@ -12,4 +14,5 @@ public interface ILista<T>{
     Iterator<T> iterator();
     void insertarOrdenado(T dato);
     String toString();
+
 }

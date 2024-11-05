@@ -38,6 +38,10 @@ public class Lista<T> implements ILista <T>{
         largo++;
     }
 
+    public NodoLista<T> getInicio() {
+        return inicio;
+    }
+
     @Override
     public void borrar(T dato) {
 

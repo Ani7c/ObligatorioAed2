@@ -118,15 +118,17 @@ public class Grafo {
         }
         System.out.println();//
     }
-    public void bfs(Sucursal suc) {
+    public Lista<Sucursal> bfs(Sucursal suc) {
         int posV = obtenerPos(suc);
         boolean[] visitados = new boolean[maxSucursales];
+        Lista<Sucursal> listaSucursales = new Lista<>(); // Lista para almacenar las sucursales visitadas
         visitados[posV] = true;
         ICola<Integer> cola = new Cola<>();
         cola.encolar(posV);
+
         while (!cola.estaVacia()) {
             int posDesencolada = cola.desencolar();
-            System.out.print(sucursales[posDesencolada] + " ");
+            listaSucursales.insertar(sucursales[posDesencolada]); // Agregar la sucursal a la lista
             for (int i = 0; i < sucursales.length; i++) {
                 if (conexiones[posDesencolada][i].isExiste() && !visitados[i]) {
                     visitados[i] = true;
@@ -134,6 +136,7 @@ public class Grafo {
                 }
             }
         }
+        return listaSucursales; // Retornar la lista de sucursales visitadas
     }
     public boolean esPuntoCritico(Sucursal suc){
         /*
