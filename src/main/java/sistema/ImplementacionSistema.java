@@ -203,7 +203,7 @@ public class ImplementacionSistema implements Sistema {
         if (latencia < 0) {
             return Retorno.error1("Latencia debe ser mayor a 0");
         }
-        if (codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1 == "" || codigoSucursal2 == "") {
+        if (codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1.isEmpty() || codigoSucursal2.isEmpty()) {
             return Retorno.error2("Los parametros no pueden ser vacios o nulos");
         }
         Sucursal sucursal1 = new Sucursal(codigoSucursal1);
@@ -228,7 +228,7 @@ public class ImplementacionSistema implements Sistema {
         if(latencia < 0){
             return Retorno.error1("Latencia debe ser mayor a 0");
         }
-        if(codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1 == "" || codigoSucursal2 == "") {
+        if(codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1.isEmpty() || codigoSucursal2.isEmpty()) {
             return Retorno.error2("Los parametros no pueden ser vacios o nulos");
         }
         Sucursal sucursal1 = new Sucursal(codigoSucursal1);
