@@ -102,21 +102,24 @@ public class Grafo {
 
     //Recorridas
 
-    public void dfs(Sucursal suc) {
+    public boolean[] dfs(Sucursal suc, Conexion[][] con) {
         boolean[] visitados = new boolean[maxSucursales];
         int posV = obtenerPos(suc);
-        dfs(posV, visitados, conexiones);
+        if (posV != -1) {
+            dfs(posV, visitados, con);
+        }
+        return visitados;
     }
 
     private void dfs(int posV, boolean[] visitados, Conexion[][] conexiones) {
-        System.out.print(sucursales[posV] + " ");
         visitados[posV] = true;
+
         for (int i = 0; i < conexiones.length; i++) {
             if (conexiones[posV][i].isExiste() && !visitados[i]) {
                 dfs(i, visitados, conexiones);
             }
         }
-        System.out.println();//
+
     }
     public Lista<Sucursal> bfs(Sucursal suc) {
         int posV = obtenerPos(suc);
@@ -139,24 +142,41 @@ public class Grafo {
         return listaSucursales; // Retornar la lista de sucursales visitadas
     }
     public boolean esPuntoCritico(Sucursal suc){
-        /*
-        - Obtener la posicion del Vertice vert.
-        - Ejecutar dfs(el metodo privado), pasando un array de visitados y la posicion de vert, luego
-        me quedo con el array de visitados que pasamos por parámetro para comparar luego.
+        int posV = obtenerPos(suc);
+        boolean[] visitadosOrigial = this.dfs(suc,conexiones);
+        Conexion[][] copiacon = new Conexion[maxSucursales][maxSucursales];
+        // Copiar las conexiones de la matriz original
+        for (int i = 0; i < maxSucursales; i++) {
+            for (int j = 0; j < maxSucursales; j++) {
+                // Crear una nueva conexión con los mismos atributos que la conexión original
+                copiacon[i][j] = new Conexion(conexiones[i][j].isExiste(), conexiones[i][j].getLatencia());
+            }
+        }
+        for (int i = 0; i < maxSucursales; i++) {
+            copiacon[posV][i].setExiste(false); // Quita conexiones desde el vértice
+            copiacon[i][posV].setExiste(false); // Quita conexiones hacia el vértice
+        }
+        int newPos = -1;
+        for(int i = 0; i < visitadosOrigial.length; i++){
+            if(i!=posV){
+                if(visitadosOrigial[i]){
+                    newPos = i;
+                    break;
+                }
 
-        - Hacer una copia de la matriz de aristas y quitarle todas las aristas asociadas a vert.
-
-        - Tengo que buscar el primer true del array de visitados anterior y me quedo con dicha posicion
-        para usar como vertice de inicio para la próxima ejecución de dfs.
-
-        - Ejecutar dfs con la posicion anterior, pero utilizando la copia de la matriz de aristas
-        y me quedo con su array de visitados.
-
-        - Comparo el array de visitados de ambas ejecuciones de dfs
-        teniendo en cuenta el no comparar la posicion del vertice vert.
-
-        - Si hay diferencias devuelvo true, ya que el vertice es un punto crítico.
-         */
+            }
+        }
+        if (newPos == -1){
+            return true;
+        }
+        Sucursal sucNueva = sucursales[newPos];
+        boolean[] visitadosNuevos = dfs(sucNueva,copiacon);
+        // Comparar los arreglos de visitados, ignorando la posición posV
+        for (int i = 0; i < visitadosOrigial.length; i++) {
+            if (i != posV && visitadosOrigial[i] != visitadosNuevos[i]) {
+                return true; // Si hay diferencia en visitados, es un punto crítico
+            }
+        }
         return false;
     }
 

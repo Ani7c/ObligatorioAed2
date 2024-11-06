@@ -12,6 +12,12 @@ public class Conexion {
         this.latencia = latencia;
         this.existe = true;
     }
+
+    public Conexion(boolean existe, int latencia) {
+        this.latencia = latencia;
+        this.existe = existe;
+    }
+
     public Conexion(Conexion c) {
         this.latencia = c.getLatencia();
         this.existe = c.isExiste();

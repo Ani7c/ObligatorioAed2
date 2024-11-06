@@ -260,7 +260,11 @@ public class ImplementacionSistema implements Sistema {
         if(existe < 0) {
             return Retorno.error2("Sucursal inexistente");
         }
-        return Retorno.ok(); //Todo implementar la parte de ok
+
+        if(Sucursales.esPuntoCritico(sucursal)) {
+            return Retorno.ok("SI");
+        }
+        return Retorno.ok("NO");
     }
 
     @Override
