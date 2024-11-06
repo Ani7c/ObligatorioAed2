@@ -280,6 +280,7 @@ public class ImplementacionSistema implements Sistema {
         ILista<Sucursal> seleccionadas = new Lista<>();
         Iterator<Sucursal> it = visitadas.iterator();
         int latenciaMaxima = Integer.MIN_VALUE;
+        int latenciaAcumulada = 0;
 
         if(it.hasNext()) {
             Sucursal actual = it.next();
@@ -290,11 +291,17 @@ public class ImplementacionSistema implements Sistema {
                 Conexion con = Sucursales.obtenerConexion(actual, siguiente);
 
 
-                // Verificar si la conexión es válida y si la latencia está dentro del límite
-                if (con != null && con.getLatencia() <= latenciaLimite) {
-                    seleccionadas.insertarOrdenado(actual);
-                    if (con.getLatencia() > latenciaMaxima) {
-                        latenciaMaxima = con.getLatencia();
+                if (con != null) {
+                    int latenciaCamino = latenciaAcumulada + con.getLatencia(); // Sumar latencia de la conexión
+
+                    if (latenciaCamino <= latenciaLimite) {
+                        seleccionadas.insertarOrdenado(actual);
+
+                        // Actualiza la latencia máxima
+                        latenciaMaxima = Math.max(latenciaMaxima, latenciaCamino);
+
+                        // Acumula la latencia total del camino
+                        latenciaAcumulada = latenciaCamino;
                     }
                 }
                 actual = siguiente;
