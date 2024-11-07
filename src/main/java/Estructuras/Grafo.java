@@ -143,6 +143,24 @@ public class Grafo {
     }
     public boolean esPuntoCritico(Sucursal suc){
         int posV = obtenerPos(suc);
+        if (posV == -1) {
+            return false; // La sucursal no existe en el grafo
+        }
+
+        // Verificar si el nodo `suc` no tiene conexiones (es un nodo aislado)
+        boolean sinConexiones = true;
+        for (int i = 0; i < maxSucursales; i++) {
+            if (conexiones[posV][i].isExiste() || conexiones[i][posV].isExiste()) {
+                sinConexiones = false;
+                break;
+            }
+        }
+
+        // Si `suc` no tiene conexiones, no puede ser un punto crítico
+        if (sinConexiones) {
+            return false;
+        }
+
         boolean[] visitadosOrigial = this.dfs(suc,conexiones);
         Conexion[][] copiacon = new Conexion[maxSucursales][maxSucursales];
         // Copiar las conexiones de la matriz original
