@@ -1,16 +1,15 @@
 package sistema;
 
 import Estructuras.ABB;
-import Estructuras.Cola;
 import Estructuras.Grafo;
-import Estructuras.Lista;
 import dominio.Conexion;
 import dominio.Equipo;
 import dominio.Jugador;
 import dominio.Sucursal;
 import interfaz.*;
 
-import java.util.Iterator;
+import java.util.Objects;
+
 
 public class ImplementacionSistema implements Sistema {
 
@@ -29,8 +28,8 @@ public class ImplementacionSistema implements Sistema {
         if (maxSucursal <= 3) {
             return Retorno.error1("La cantidad de sucursales debe ser mayor a 3");
         }
-        ABBEquipo = new ABB<Equipo>();
-        ABBJugador = new ABB<Jugador>();
+        ABBEquipo = new ABB<>();
+        ABBJugador = new ABB<>();
         Sucursales = new Grafo(maxSucursal, false);
         maxSucursales = maxSucursal;
 
@@ -44,10 +43,8 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno registrarJugador(String alias, String nombre, String apellido, Categoria categoria) {
 
-        //    1. Si alguno de los parámetros es vacío o null.
-        //  2. Si ya existe un jugador registrado con ese alias.
         Jugador nuevoJugador = new Jugador(alias);
-        if (alias == "" || nombre == "" || apellido == "" || categoria == null || alias == null || nombre == null || apellido == null) {
+        if (Objects.equals(alias, "") || Objects.equals(nombre, "") || Objects.equals(apellido, "") || categoria == null || alias == null || nombre == null || apellido == null) {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
         Jugador jugadorBuscado = ABBJugador.buscar(nuevoJugador);
@@ -117,9 +114,7 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno registrarEquipo(String nombre, String manager) {
-        //    1. Si alguno de los parámetros es vacío o null.
-        //  2. Si ya existe un Equipo registrado con ese nombre.
-        if (nombre == "" || manager == "" || nombre == null || manager == null) {
+        if (Objects.equals(nombre, "") || Objects.equals(manager, "") || nombre == null || manager == null) {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
         Equipo nuevoEquipo = new Equipo(manager, nombre);
@@ -133,7 +128,7 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno agregarJugadorAEquipo(String nombreEquipo, String aliasJugador) {
-        if (nombreEquipo == "" || aliasJugador == "" || aliasJugador == null || nombreEquipo == null) {
+        if (Objects.equals(nombreEquipo, "") || Objects.equals(aliasJugador, "") || aliasJugador == null || nombreEquipo == null) {
             return Retorno.error1("Los parametros no pueden ser vacios o nullos");
         }
         Equipo equipo = new Equipo(nombreEquipo);
@@ -172,14 +167,12 @@ public class ImplementacionSistema implements Sistema {
             return Retorno.error2("No existe equipo con este nombre");
         }
         String jugadoresListados = equipoBuscado.getJugadoresdelEquipo().listarAscendenteString();
-        System.out.println(jugadoresListados);
         return Retorno.ok(jugadoresListados);
     }
 
     @Override
     public Retorno listarEquiposDescendente() {
         String EquiposListado = ABBEquipo.listarDescendenteString();
-        System.out.println(EquiposListado);
         return Retorno.ok(EquiposListado);
     }
 
@@ -270,7 +263,6 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int latenciaLimite) {
-        // Validación de entrada
         if (codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
             return Retorno.error1("El código de la sucursal anfitriona no puede ser vacío o nulo.");
         }
@@ -281,58 +273,14 @@ public class ImplementacionSistema implements Sistema {
         if (posAnfitriona == -1) {
             return Retorno.error2("Sucursal anfitriona no existe.");
         }
+
         if (latenciaLimite <= 0) {
             return Retorno.error3("La latencia debe ser mayor a 0.");
         }
 
-        // Crear el ABB para almacenar las sucursales viables
-        ABB<Sucursal> sucursalesViables = new ABB<>();
+        ABB<Sucursal> sucursalesViables = Sucursales.calcularSucursalesViables(sucursalAnfitriona, latenciaLimite);
+        int latenciaMaxima = Sucursales.latenciaMasAlta(sucursalAnfitriona, latenciaLimite);
 
-        // Inicializar estructuras para el algoritmo de Dijkstra
-        ICola<Sucursal> cola = new Cola<>();
-        boolean[] visitados = new boolean[maxSucursales];
-
-        // Inicializar la cola con la sucursal anfitriona
-        cola.encolar(sucursalAnfitriona);
-        visitados[posAnfitriona] = true;
-
-        int latenciaMaxima = 0;
-
-        // Algoritmo de Dijkstra
-        while (!cola.estaVacia()) {
-            Sucursal actual = cola.desencolar();
-            int latenciaActual = 0; // Al principio no tenemos una latencia acumulada
-
-            // Procesar todos los adyacentes de la sucursal actual
-            ILista<Sucursal> adyacentes = Sucursales.adyacentes(actual);
-            Lista.NodoLista<Sucursal> nodoAdyacente = adyacentes.getInicio();
-
-            while (nodoAdyacente != null) {
-                Sucursal sucursalVecina = nodoAdyacente.getDato();
-                int posVecina = Sucursales.obtenerPos(sucursalVecina);
-                Conexion conexion = Sucursales.obtenerConexion(actual, sucursalVecina);
-
-                // Solo procesamos si la conexión existe
-                if (conexion != null && conexion.isExiste()) {
-                    int nuevaLatencia = latenciaActual + conexion.getLatencia();
-
-                    // Insertar la sucursal en el ABB si la latencia está dentro del límite
-                    if (nuevaLatencia <= latenciaLimite) {
-                        sucursalesViables.insertar(sucursalVecina);
-                        latenciaMaxima = Math.max(latenciaMaxima, nuevaLatencia);
-                    }
-
-                    // Encolar la sucursal vecina si no ha sido visitada
-                    if (!visitados[posVecina]) {
-                        cola.encolar(sucursalVecina);
-                        visitados[posVecina] = true;
-                    }
-                }
-                nodoAdyacente = nodoAdyacente.getSig();
-            }
-        }
-
-        // Construir el resultado en valorString usando el método `listarAscendenteString` del ABB de sucursales viables
         String resultado = sucursalesViables.listarAscendenteString();
 
         return Retorno.ok(latenciaMaxima, resultado);

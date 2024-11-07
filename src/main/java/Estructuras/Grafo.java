@@ -175,8 +175,8 @@ public class Grafo {
             }
         }
         for (int i = 0; i < maxSucursales; i++) {
-            copiacon[posV][i].setExiste(false); // Quita conexiones desde el vértice
-            copiacon[i][posV].setExiste(false); // Quita conexiones hacia el vértice
+            copiacon[posV][i].setExiste(false);
+            copiacon[i][posV].setExiste(false);
         }
         int newPos = -1;
         for(int i = 0; i < visitadosOrigial.length; i++){
@@ -222,66 +222,100 @@ public class Grafo {
         return -1;
     }
 
-
-    //prueba
-    public class SucursalDistancia {
-        public Sucursal sucursal;
-        public int distancia;
-
-        public SucursalDistancia(Sucursal sucursal, int distancia) {
-            this.sucursal = sucursal;
-            this.distancia = distancia;
+    private int obtenerSiguienteVerticeNoVisitadoDeMenorCosto(int[] costos, boolean[] visitados){
+        int posMin = -1;
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i < maxSucursales; i++){
+            if(!visitados[i]  && costos[i]<min){
+                min=costos[i];
+                posMin=i;
+            }
         }
+        return posMin;
     }
 
-    // Método para calcular las distancias usando Dijkstra
-    public Lista<SucursalDistancia> calcularDistancia(Sucursal sucursalAnfitriona, int latenciaLimite) {
-        // Inicializar las estructuras necesarias
-        Lista<SucursalDistancia> distancias = new Lista<>();
-        ICola<SucursalDistancia> cola = new Cola<>();
+    public ABB<Sucursal> calcularSucursalesViables(Sucursal sucursalAnfitriona, int latenciaLimite) {
+        ABB<Sucursal> sucursalesViables = new ABB<>();
         boolean[] visitados = new boolean[maxSucursales];
+        int[] costos = new int[maxSucursales];
 
-        int posAnfitriona = obtenerPos(sucursalAnfitriona);
-        if (posAnfitriona == -1) {
-            return distancias; // Sucursal no encontrada, se devuelve una lista vacía
+        // Inicialización
+        for (int i = 0; i < maxSucursales; i++) {
+            costos[i] = Integer.MAX_VALUE;
+            visitados[i] = false;
         }
 
-        // Inicializamos con la sucursal anfitriona
-        SucursalDistancia origen = new SucursalDistancia(sucursalAnfitriona, 0);
-        distancias.insertar(origen);
-        cola.encolar(origen);
-        visitados[posAnfitriona] = true;
+        int posAnfitriona = obtenerPos(sucursalAnfitriona);
+        costos[posAnfitriona] = 0;
 
-        // Algoritmo de Dijkstra usando TADs
-        while (!cola.estaVacia()) {
-            SucursalDistancia actual = cola.desencolar();
-            int posActual = obtenerPos(actual.sucursal);
+        for (int i = 0; i < cantDeVertices; i++) {
+            int pos = obtenerSiguienteVerticeNoVisitadoDeMenorCosto(costos, visitados);
 
-            // Procesar cada sucursal adyacente
-            ILista<Sucursal> adyacentes = adyacentes(actual.sucursal);
-            Lista.NodoLista<Sucursal> nodoAdyacente = adyacentes.getInicio();
-            while (nodoAdyacente != null) {
-                Sucursal sucursalVecina = nodoAdyacente.getDato();
-                int posVecina = obtenerPos(sucursalVecina);
-                Conexion conexion = obtenerConexion(actual.sucursal, sucursalVecina);
+            if (pos != -1) {
+                visitados[pos] = true;
 
-                if (!visitados[posVecina] && conexion != null && conexion.isExiste()) {
-                    int nuevaDistancia = actual.distancia + conexion.getLatencia();
-
-                    // Si la nueva distancia es menor o igual al límite, agregarla
-                    if (nuevaDistancia <= latenciaLimite) {
-                        SucursalDistancia sucursalConDistancia = new SucursalDistancia(sucursalVecina, nuevaDistancia);
-                        distancias.insertar(sucursalConDistancia);
-                        cola.encolar(sucursalConDistancia);
-                        visitados[posVecina] = true;
+                for (int j = 0; j < maxSucursales; j++) {
+                    if (conexiones[pos][j].isExiste() && !visitados[j]) {
+                        int nuevaLatencia = costos[pos] + conexiones[pos][j].getLatencia();
+                        if (nuevaLatencia < costos[j]) {
+                            costos[j] = nuevaLatencia;
+                        }
                     }
                 }
-                nodoAdyacente = nodoAdyacente.getSig();
             }
         }
 
-        return distancias;
+        for (int i = 0; i < maxSucursales; i++) {
+            if (costos[i] <= latenciaLimite && costos[i] != Integer.MAX_VALUE) {
+                sucursalesViables.insertar(sucursales[i]);
+            }
+        }
+
+        return sucursalesViables;
     }
+
+    public int latenciaMasAlta(Sucursal sucursalAnfitriona, int latenciaLimite) {
+        boolean[] visitados = new boolean[maxSucursales];
+        int[] costos = new int[maxSucursales];
+
+        for (int i = 0; i < maxSucursales; i++) {
+            costos[i] = Integer.MAX_VALUE;
+            visitados[i] = false;
+        }
+
+        int posAnfitriona = obtenerPos(sucursalAnfitriona);
+        costos[posAnfitriona] = 0;
+
+        for (int i = 0; i < cantDeVertices; i++) {
+            int pos = obtenerSiguienteVerticeNoVisitadoDeMenorCosto(costos, visitados);
+
+            if (pos != -1) {
+                visitados[pos] = true;
+
+                for (int j = 0; j < maxSucursales; j++) {
+                    if (conexiones[pos][j].isExiste() && !visitados[j]) {
+                        int nuevaLatencia = costos[pos] + conexiones[pos][j].getLatencia();
+                        if (nuevaLatencia < costos[j]) {
+                            costos[j] = nuevaLatencia;
+                        }
+                    }
+                }
+            }
+        }
+
+        int latenciaMaxima = -1;
+        for (int i = 0; i < maxSucursales; i++) {
+            if (costos[i] <= latenciaLimite && costos[i] != Integer.MAX_VALUE) {
+                latenciaMaxima = Math.max(latenciaMaxima, costos[i]);
+            }
+        }
+
+        return latenciaMaxima;
+    }
+
+
+
+
 }
 
 

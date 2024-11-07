@@ -1,4 +1,4 @@
-package sistemat;
+package tests;
 
 import interfaz.Categoria;
 import interfaz.Retorno;
