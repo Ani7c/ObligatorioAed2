@@ -274,8 +274,10 @@ public class ImplementacionSistema implements Sistema {
         if (codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
             return Retorno.error1("El código de la sucursal anfitriona no puede ser vacío o nulo.");
         }
+
         Sucursal sucursalAnfitriona = Sucursales.recuperar(new Sucursal(codigoSucursalAnfitriona));
         int posAnfitriona = Sucursales.obtenerPos(sucursalAnfitriona);
+
         if (posAnfitriona == -1) {
             return Retorno.error2("Sucursal anfitriona no existe.");
         }
@@ -288,12 +290,10 @@ public class ImplementacionSistema implements Sistema {
 
         // Inicializar estructuras para el algoritmo de Dijkstra
         ICola<Sucursal> cola = new Cola<>();
-        Lista<Integer> latencias = new Lista<>(); // Lista para almacenar latencias acumuladas
         boolean[] visitados = new boolean[maxSucursales];
 
-        // Inicializar la cola con la sucursal anfitriona y latencia 0
+        // Inicializar la cola con la sucursal anfitriona
         cola.encolar(sucursalAnfitriona);
-        latencias.insertar(0);
         visitados[posAnfitriona] = true;
 
         int latenciaMaxima = 0;
@@ -301,33 +301,30 @@ public class ImplementacionSistema implements Sistema {
         // Algoritmo de Dijkstra
         while (!cola.estaVacia()) {
             Sucursal actual = cola.desencolar();
-            int latenciaActual = latencias.recuperar(0); // Obtener la latencia acumulada para la sucursal actual
-            latencias.borrar(0); // Borrar la latencia que ya estamos usando
-
-            int posActual = Sucursales.obtenerPos(actual);
-
-            // Insertar la sucursal en el ABB si la latencia está dentro del límite
-            if (latenciaActual <= latenciaLimite) {
-                sucursalesViables.insertar(actual);
-                latenciaMaxima = Math.max(latenciaMaxima, latenciaActual);
-            }
+            int latenciaActual = 0; // Al principio no tenemos una latencia acumulada
 
             // Procesar todos los adyacentes de la sucursal actual
             ILista<Sucursal> adyacentes = Sucursales.adyacentes(actual);
             Lista.NodoLista<Sucursal> nodoAdyacente = adyacentes.getInicio();
+
             while (nodoAdyacente != null) {
                 Sucursal sucursalVecina = nodoAdyacente.getDato();
                 int posVecina = Sucursales.obtenerPos(sucursalVecina);
                 Conexion conexion = Sucursales.obtenerConexion(actual, sucursalVecina);
 
-                // Solo procesamos si no ha sido visitada y la conexión existe
-                if (!visitados[posVecina] && conexion != null && conexion.isExiste()) {
+                // Solo procesamos si la conexión existe
+                if (conexion != null && conexion.isExiste()) {
                     int nuevaLatencia = latenciaActual + conexion.getLatencia();
 
-                    // Si la latencia está dentro del límite, la encolamos para su procesamiento posterior
+                    // Insertar la sucursal en el ABB si la latencia está dentro del límite
                     if (nuevaLatencia <= latenciaLimite) {
+                        sucursalesViables.insertar(sucursalVecina);
+                        latenciaMaxima = Math.max(latenciaMaxima, nuevaLatencia);
+                    }
+
+                    // Encolar la sucursal vecina si no ha sido visitada
+                    if (!visitados[posVecina]) {
                         cola.encolar(sucursalVecina);
-                        latencias.insertar(nuevaLatencia);
                         visitados[posVecina] = true;
                     }
                 }
@@ -337,10 +334,8 @@ public class ImplementacionSistema implements Sistema {
 
         // Construir el resultado en valorString usando el método `listarAscendenteString` del ABB de sucursales viables
         String resultado = sucursalesViables.listarAscendenteString();
-        System.out.println(latenciaMaxima);
-        System.out.println(resultado);
+
         return Retorno.ok(latenciaMaxima, resultado);
     }
-
 }
 
