@@ -1,6 +1,7 @@
 package sistema;
 
 import Estructuras.ABB;
+import Estructuras.Cola;
 import Estructuras.Grafo;
 import Estructuras.Lista;
 import dominio.Conexion;
@@ -46,7 +47,7 @@ public class ImplementacionSistema implements Sistema {
         //    1. Si alguno de los parámetros es vacío o null.
         //  2. Si ya existe un jugador registrado con ese alias.
         Jugador nuevoJugador = new Jugador(alias);
-        if (alias == "" || nombre == "" || apellido == "" || categoria == null || alias == null || nombre == null || apellido == null ) {
+        if (alias == "" || nombre == "" || apellido == "" || categoria == null || alias == null || nombre == null || apellido == null) {
             return Retorno.error1("Los parametros no pueden ser vacios");
         }
         Jugador jugadorBuscado = ABBJugador.buscar(nuevoJugador);
@@ -187,7 +188,7 @@ public class ImplementacionSistema implements Sistema {
         if (Sucursales.getCantDeVertices() >= maxSucursales) {
             return Retorno.error1("No se pueden registrar mas sucursales");
         }
-        if (codigo == null || nombre == null || codigo.isEmpty()  || nombre.isEmpty()) {
+        if (codigo == null || nombre == null || codigo.isEmpty() || nombre.isEmpty()) {
             return Retorno.error2("Los parametros no pueden ser vacios o nullos");
         }
         Sucursal sucursal = new Sucursal(codigo, nombre);
@@ -227,21 +228,21 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno actualizarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
-        if(latencia < 0){
+        if (latencia < 0) {
             return Retorno.error1("Latencia debe ser mayor a 0");
         }
-        if(codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1.isEmpty() || codigoSucursal2.isEmpty()) {
+        if (codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1.isEmpty() || codigoSucursal2.isEmpty()) {
             return Retorno.error2("Los parametros no pueden ser vacios o nulos");
         }
         Sucursal sucursal1 = new Sucursal(codigoSucursal1);
         Sucursal sucursal2 = new Sucursal(codigoSucursal2);
         int existe1 = Sucursales.obtenerPos(sucursal1);
         int existe2 = Sucursales.obtenerPos(sucursal2);
-        if(existe1 < 0 || existe2 < 0) {
+        if (existe1 < 0 || existe2 < 0) {
             return Retorno.error3("Sucursal inexistente");
         }
         Conexion conexion = Sucursales.obtenerConexion(sucursal1, sucursal2);
-        if(!conexion.isExiste()){
+        if (!conexion.isExiste()) {
             return Retorno.error4("No existe conexion entre las 2 sucursales");
         }
         conexion.setLatencia(latencia);
@@ -252,16 +253,16 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno analizarSucursal(String codigoSucursal) {
-        if(codigoSucursal == null || codigoSucursal.isEmpty()) {
+        if (codigoSucursal == null || codigoSucursal.isEmpty()) {
             return Retorno.error1("Los parametros no pueden ser vacios o nulos");
         }
         Sucursal sucursal = new Sucursal(codigoSucursal);
         int existe = Sucursales.obtenerPos(sucursal);
-        if(existe < 0) {
+        if (existe < 0) {
             return Retorno.error2("Sucursal inexistente");
         }
 
-        if(Sucursales.esPuntoCritico(sucursal)) {
+        if (Sucursales.esPuntoCritico(sucursal)) {
             return Retorno.ok("SI");
         }
         return Retorno.ok("NO");
@@ -269,53 +270,76 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int latenciaLimite) {
-        if(codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
-            return Retorno.error1("codigoSucursalAnfitriona no pueden ser vacios nulos");
+        // Validación de entrada
+        if (codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
+            return Retorno.error1("El código de la sucursal anfitriona no puede ser vacío o nulo.");
         }
-        Sucursal sucursal = new Sucursal(codigoSucursalAnfitriona);
-        int existe = Sucursales.obtenerPos(sucursal);
-        if(existe < 0) {
-            return Retorno.error2("Sucursal inexistente");
+        Sucursal sucursalAnfitriona = Sucursales.recuperar(new Sucursal(codigoSucursalAnfitriona));
+        int posAnfitriona = Sucursales.obtenerPos(sucursalAnfitriona);
+        if (posAnfitriona == -1) {
+            return Retorno.error2("Sucursal anfitriona no existe.");
         }
-        if(latenciaLimite <= 0){
-            return Retorno.error3("Latencia debe ser mayor a 0");
+        if (latenciaLimite <= 0) {
+            return Retorno.error3("La latencia debe ser mayor a 0.");
         }
-        ILista<Sucursal> visitadas = Sucursales.bfs(sucursal);
-        ILista<Sucursal> seleccionadas = new Lista<>();
-        Iterator<Sucursal> it = visitadas.iterator();
-        int latenciaMaxima = Integer.MIN_VALUE;
-        int latenciaAcumulada = 0;
 
-        if(it.hasNext()) {
-            Sucursal actual = it.next();
-            while (it.hasNext()) {
+        // Crear el ABB para almacenar las sucursales viables
+        ABB<Sucursal> sucursalesViables = new ABB<>();
 
+        // Inicializar estructuras para el algoritmo de Dijkstra
+        ICola<Sucursal> cola = new Cola<>();
+        Lista<Integer> latencias = new Lista<>(); // Lista para almacenar latencias acumuladas
+        boolean[] visitados = new boolean[maxSucursales];
 
-                Sucursal siguiente = it.next();
-                Conexion con = Sucursales.obtenerConexion(actual, siguiente);
+        // Inicializar la cola con la sucursal anfitriona y latencia 0
+        cola.encolar(sucursalAnfitriona);
+        latencias.insertar(0);
+        visitados[posAnfitriona] = true;
 
+        int latenciaMaxima = 0;
 
-                if (con != null) {
-                    int latenciaCamino = latenciaAcumulada + con.getLatencia(); // Sumar latencia de la conexión
+        // Algoritmo de Dijkstra
+        while (!cola.estaVacia()) {
+            Sucursal actual = cola.desencolar();
+            int latenciaActual = latencias.recuperar(0); // Obtener la latencia acumulada para la sucursal actual
+            latencias.borrar(0); // Borrar la latencia que ya estamos usando
 
-                    if (latenciaCamino <= latenciaLimite) {
-                        seleccionadas.insertarOrdenado(actual);
+            int posActual = Sucursales.obtenerPos(actual);
 
-                        // Actualiza la latencia máxima
-                        latenciaMaxima = Math.max(latenciaMaxima, latenciaCamino);
+            // Insertar la sucursal en el ABB si la latencia está dentro del límite
+            if (latenciaActual <= latenciaLimite) {
+                sucursalesViables.insertar(actual);
+                latenciaMaxima = Math.max(latenciaMaxima, latenciaActual);
+            }
 
-                        // Acumula la latencia total del camino
-                        latenciaAcumulada = latenciaCamino;
+            // Procesar todos los adyacentes de la sucursal actual
+            ILista<Sucursal> adyacentes = Sucursales.adyacentes(actual);
+            Lista.NodoLista<Sucursal> nodoAdyacente = adyacentes.getInicio();
+            while (nodoAdyacente != null) {
+                Sucursal sucursalVecina = nodoAdyacente.getDato();
+                int posVecina = Sucursales.obtenerPos(sucursalVecina);
+                Conexion conexion = Sucursales.obtenerConexion(actual, sucursalVecina);
+
+                // Solo procesamos si no ha sido visitada y la conexión existe
+                if (!visitados[posVecina] && conexion != null && conexion.isExiste()) {
+                    int nuevaLatencia = latenciaActual + conexion.getLatencia();
+
+                    // Si la latencia está dentro del límite, la encolamos para su procesamiento posterior
+                    if (nuevaLatencia <= latenciaLimite) {
+                        cola.encolar(sucursalVecina);
+                        latencias.insertar(nuevaLatencia);
+                        visitados[posVecina] = true;
                     }
                 }
-                actual = siguiente;
-
+                nodoAdyacente = nodoAdyacente.getSig();
             }
-            seleccionadas.insertarOrdenado(actual);
-
         }
-        String listadoSucursales = seleccionadas.toString();
-        return Retorno.ok(latenciaMaxima, listadoSucursales);
+
+        // Construir el resultado en valorString usando el método `listarAscendenteString` del ABB de sucursales viables
+        String resultado = sucursalesViables.listarAscendenteString();
+        System.out.println(latenciaMaxima);
+        System.out.println(resultado);
+        return Retorno.ok(latenciaMaxima, resultado);
     }
 
 }

@@ -11,6 +11,24 @@ public class ABB<T extends Comparable<T>>{
         return cantidad;
     }
 
+    public boolean existe(T dato) {
+        return existe(dato, raiz);
+    }
+    private boolean existe(T dato, NodoABB<T> nodo) {
+        // Verifica si el nodo actual es nulo
+        if (nodo == null) {
+            return false; // El dato no se encuentra en el árbol
+        }
+
+        // Compara el dato con el dato del nodo actual
+        if (dato.equals(nodo.dato)) {
+            return true; // El dato fue encontrado
+        } else if (dato.compareTo(nodo.dato) < 0) {
+            return existe(dato, nodo.izq); // Busca en el subárbol izquierdo
+        } else {
+            return existe(dato, nodo.der); // Busca en el subárbol derecho
+        }
+    }
     public void insertar(T dato) {
         if (raiz == null) {
             raiz = new NodoABB<>(dato);

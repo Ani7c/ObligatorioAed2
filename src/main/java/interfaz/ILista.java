@@ -14,5 +14,6 @@ public interface ILista<T>{
     Iterator<T> iterator();
     void insertarOrdenado(T dato);
     String toString();
+    Lista.NodoLista<T> getInicio();
 
 }

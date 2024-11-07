@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 public class Lista<T> implements ILista <T>{
 
-    protected NodoLista<T> inicio;
+    public NodoLista<T> inicio;
     protected int largo;
 
     public Lista() {
@@ -97,7 +97,7 @@ public class Lista<T> implements ILista <T>{
 
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            private NodoLista<T> aux = inicio;
+            public NodoLista<T> aux = inicio;
 
             @Override
             public boolean hasNext() {
@@ -131,7 +131,7 @@ public class Lista<T> implements ILista <T>{
         return sb.toString();
     }
 
-    class NodoLista<T> {
+    public static class NodoLista<T> {
         private T dato;
         private NodoLista<T> sig;
 

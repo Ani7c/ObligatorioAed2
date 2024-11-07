@@ -36,6 +36,10 @@ public class Grafo {
         }
     }
 
+    public Sucursal recuperar(Sucursal suc) {
+        int pos = obtenerPos(suc);
+        return (pos != -1) ? sucursales[pos] : null;
+    }
     public int getCantDeVertices() {
         return cantDeVertices;
     }
@@ -218,6 +222,66 @@ public class Grafo {
         return -1;
     }
 
+
+    //prueba
+    public class SucursalDistancia {
+        public Sucursal sucursal;
+        public int distancia;
+
+        public SucursalDistancia(Sucursal sucursal, int distancia) {
+            this.sucursal = sucursal;
+            this.distancia = distancia;
+        }
+    }
+
+    // Método para calcular las distancias usando Dijkstra
+    public Lista<SucursalDistancia> calcularDistancia(Sucursal sucursalAnfitriona, int latenciaLimite) {
+        // Inicializar las estructuras necesarias
+        Lista<SucursalDistancia> distancias = new Lista<>();
+        ICola<SucursalDistancia> cola = new Cola<>();
+        boolean[] visitados = new boolean[maxSucursales];
+
+        int posAnfitriona = obtenerPos(sucursalAnfitriona);
+        if (posAnfitriona == -1) {
+            return distancias; // Sucursal no encontrada, se devuelve una lista vacía
+        }
+
+        // Inicializamos con la sucursal anfitriona
+        SucursalDistancia origen = new SucursalDistancia(sucursalAnfitriona, 0);
+        distancias.insertar(origen);
+        cola.encolar(origen);
+        visitados[posAnfitriona] = true;
+
+        // Algoritmo de Dijkstra usando TADs
+        while (!cola.estaVacia()) {
+            SucursalDistancia actual = cola.desencolar();
+            int posActual = obtenerPos(actual.sucursal);
+
+            // Procesar cada sucursal adyacente
+            ILista<Sucursal> adyacentes = adyacentes(actual.sucursal);
+            Lista.NodoLista<Sucursal> nodoAdyacente = adyacentes.getInicio();
+            while (nodoAdyacente != null) {
+                Sucursal sucursalVecina = nodoAdyacente.getDato();
+                int posVecina = obtenerPos(sucursalVecina);
+                Conexion conexion = obtenerConexion(actual.sucursal, sucursalVecina);
+
+                if (!visitados[posVecina] && conexion != null && conexion.isExiste()) {
+                    int nuevaDistancia = actual.distancia + conexion.getLatencia();
+
+                    // Si la nueva distancia es menor o igual al límite, agregarla
+                    if (nuevaDistancia <= latenciaLimite) {
+                        SucursalDistancia sucursalConDistancia = new SucursalDistancia(sucursalVecina, nuevaDistancia);
+                        distancias.insertar(sucursalConDistancia);
+                        cola.encolar(sucursalConDistancia);
+                        visitados[posVecina] = true;
+                    }
+                }
+                nodoAdyacente = nodoAdyacente.getSig();
+            }
+        }
+
+        return distancias;
+    }
 }
 
 
